@@ -1,0 +1,17 @@
+function sum(x, y) {
+	int res = x + y;
+	return res;
+}
+
+// Programa que suma dos variables
+
+main() {
+	int x = 2;
+	int y = 3;
+	int res = sum(x, y);
+	if (res == 5) {
+		print("Resultado correcto");
+	} else {
+		print("Resultado incorrecto");
+	}
+}

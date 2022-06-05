@@ -1,0 +1,5 @@
+Comandos analizador lexico:
+
+- flex "nombreFichero".l
+- gcc lex.yy.c -lfl
+- ./a.out "ficheroAProbar"
