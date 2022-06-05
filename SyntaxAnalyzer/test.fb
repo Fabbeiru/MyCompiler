@@ -1,0 +1,16 @@
+function sum(x, y) {
+    int res = x + y;
+    return res;
+}
+main() {
+    int res = 0;
+    int x = 2;
+    int y = 3;
+    res = sum(x, y);
+    res = 5;
+    if (res == 5) {
+        print("Resultado correcto");
+    } else {
+        print("Resultado incorrecto");
+    }
+}
