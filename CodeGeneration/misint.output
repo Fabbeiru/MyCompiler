@@ -1,0 +1,1249 @@
+Grammar
+
+    0 $accept: program $end
+
+    1 expression: expression '+' expression
+    2           | expression '-' expression
+    3           | term
+
+    4 term: term '*' value
+    5     | term '/' value
+    6     | value
+
+    7 value: '(' expression ')'
+    8      | NUMBER
+    9      | WORD
+   10      | functCall
+
+   11 comparison: expression EQ expression
+   12           | expression NEQ expression
+   13           | expression LT expression
+   14           | expression GT expression
+   15           | expression LEQ expression
+   16           | expression GEQ expression
+
+   17 $@1: %empty
+
+   18 assignment: INT WORD '=' $@1 expression
+   19           | WORD '=' expression
+
+   20 print: PRINT '(' QUOTES ')'
+   21      | PRINT '(' WORD ')'
+
+   22 return: RETURN expression ';'
+
+   23 parameters: WORD parameter
+
+   24 parameter: ',' parameters
+   25          | %empty
+
+   26 arguments: argument INT WORD
+
+   27 argument: arguments ','
+   28         | %empty
+
+   29 beginIf: IF '(' comparison ')' '{'
+
+   30 if: beginIf statements '}'
+
+   31 @2: %empty
+
+   32 if: beginIf statements '}' ELSE '{' @2 statements '}'
+
+   33 @3: %empty
+
+   34 @4: %empty
+
+   35 while: WHILE '(' @3 comparison ')' '{' @4 statements '}'
+
+   36 @5: %empty
+
+   37 $@6: %empty
+
+   38 function: FUNCTION WORD '(' @5 arguments ')' '{' $@6 statements return '}'
+
+   39 functCall: WORD '(' parameters ')'
+
+   40 $@7: %empty
+
+   41 main: MAIN '(' ')' '{' $@7 statements '}'
+
+   42 statements: statements statement
+   43           | %empty
+
+   44 statement: if
+   45          | while
+   46          | print ';'
+   47          | assignment ';'
+
+   48 program: function program
+   49        | main
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'(' (40) 7 20 21 29 35 38 39 41
+')' (41) 7 20 21 29 35 38 39 41
+'*' (42) 4
+'+' (43) 1
+',' (44) 24 27
+'-' (45) 2
+'/' (47) 5
+';' (59) 22 46 47
+'=' (61) 18 19
+'{' (123) 29 32 35 38 41
+'}' (125) 30 32 35 38 41
+error (256)
+NUMBER (258) 8
+WORD (259) 9 18 19 21 23 26 38 39
+QUOTES (260) 20
+EQ (261) 11
+NEQ (262) 12
+LT (263) 13
+GT (264) 14
+LEQ (265) 15
+GEQ (266) 16
+IF (267) 29
+ELSE (268) 32
+WHILE (269) 35
+PRINT (270) 20 21
+INT (271) 18 26
+FUNCTION (272) 38
+MAIN (273) 41
+RETURN (274) 22
+
+
+Nonterminals, with rules where they appear
+
+$accept (31)
+    on left: 0
+expression (32)
+    on left: 1 2 3, on right: 1 2 7 11 12 13 14 15 16 18 19 22
+term (33)
+    on left: 4 5 6, on right: 3 4 5
+value (34)
+    on left: 7 8 9 10, on right: 4 5 6
+comparison (35)
+    on left: 11 12 13 14 15 16, on right: 29 35
+assignment (36)
+    on left: 18 19, on right: 47
+$@1 (37)
+    on left: 17, on right: 18
+print (38)
+    on left: 20 21, on right: 46
+return (39)
+    on left: 22, on right: 38
+parameters (40)
+    on left: 23, on right: 24 39
+parameter (41)
+    on left: 24 25, on right: 23
+arguments (42)
+    on left: 26, on right: 27 38
+argument (43)
+    on left: 27 28, on right: 26
+beginIf (44)
+    on left: 29, on right: 30 32
+if (45)
+    on left: 30 32, on right: 44
+@2 (46)
+    on left: 31, on right: 32
+while (47)
+    on left: 35, on right: 45
+@3 (48)
+    on left: 33, on right: 35
+@4 (49)
+    on left: 34, on right: 35
+function (50)
+    on left: 38, on right: 48
+@5 (51)
+    on left: 36, on right: 38
+$@6 (52)
+    on left: 37, on right: 38
+functCall (53)
+    on left: 39, on right: 10
+main (54)
+    on left: 41, on right: 49
+$@7 (55)
+    on left: 40, on right: 41
+statements (56)
+    on left: 42 43, on right: 30 32 35 38 41 42
+statement (57)
+    on left: 44 45 46 47, on right: 42
+program (58)
+    on left: 48 49, on right: 0 48
+
+
+State 0
+
+    0 $accept: . program $end
+
+    FUNCTION  shift, and go to state 1
+    MAIN      shift, and go to state 2
+
+    function  go to state 3
+    main      go to state 4
+    program   go to state 5
+
+
+State 1
+
+   38 function: FUNCTION . WORD '(' @5 arguments ')' '{' $@6 statements return '}'
+
+    WORD  shift, and go to state 6
+
+
+State 2
+
+   41 main: MAIN . '(' ')' '{' $@7 statements '}'
+
+    '('  shift, and go to state 7
+
+
+State 3
+
+   48 program: function . program
+
+    FUNCTION  shift, and go to state 1
+    MAIN      shift, and go to state 2
+
+    function  go to state 3
+    main      go to state 4
+    program   go to state 8
+
+
+State 4
+
+   49 program: main .
+
+    $default  reduce using rule 49 (program)
+
+
+State 5
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 9
+
+
+State 6
+
+   38 function: FUNCTION WORD . '(' @5 arguments ')' '{' $@6 statements return '}'
+
+    '('  shift, and go to state 10
+
+
+State 7
+
+   41 main: MAIN '(' . ')' '{' $@7 statements '}'
+
+    ')'  shift, and go to state 11
+
+
+State 8
+
+   48 program: function program .
+
+    $default  reduce using rule 48 (program)
+
+
+State 9
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+State 10
+
+   38 function: FUNCTION WORD '(' . @5 arguments ')' '{' $@6 statements return '}'
+
+    $default  reduce using rule 36 (@5)
+
+    @5  go to state 12
+
+
+State 11
+
+   41 main: MAIN '(' ')' . '{' $@7 statements '}'
+
+    '{'  shift, and go to state 13
+
+
+State 12
+
+   38 function: FUNCTION WORD '(' @5 . arguments ')' '{' $@6 statements return '}'
+
+    $default  reduce using rule 28 (argument)
+
+    arguments  go to state 14
+    argument   go to state 15
+
+
+State 13
+
+   41 main: MAIN '(' ')' '{' . $@7 statements '}'
+
+    $default  reduce using rule 40 ($@7)
+
+    $@7  go to state 16
+
+
+State 14
+
+   27 argument: arguments . ','
+   38 function: FUNCTION WORD '(' @5 arguments . ')' '{' $@6 statements return '}'
+
+    ')'  shift, and go to state 17
+    ','  shift, and go to state 18
+
+
+State 15
+
+   26 arguments: argument . INT WORD
+
+    INT  shift, and go to state 19
+
+
+State 16
+
+   41 main: MAIN '(' ')' '{' $@7 . statements '}'
+
+    $default  reduce using rule 43 (statements)
+
+    statements  go to state 20
+
+
+State 17
+
+   38 function: FUNCTION WORD '(' @5 arguments ')' . '{' $@6 statements return '}'
+
+    '{'  shift, and go to state 21
+
+
+State 18
+
+   27 argument: arguments ',' .
+
+    $default  reduce using rule 27 (argument)
+
+
+State 19
+
+   26 arguments: argument INT . WORD
+
+    WORD  shift, and go to state 22
+
+
+State 20
+
+   41 main: MAIN '(' ')' '{' $@7 statements . '}'
+   42 statements: statements . statement
+
+    WORD   shift, and go to state 23
+    IF     shift, and go to state 24
+    WHILE  shift, and go to state 25
+    PRINT  shift, and go to state 26
+    INT    shift, and go to state 27
+    '}'    shift, and go to state 28
+
+    assignment  go to state 29
+    print       go to state 30
+    beginIf     go to state 31
+    if          go to state 32
+    while       go to state 33
+    statement   go to state 34
+
+
+State 21
+
+   38 function: FUNCTION WORD '(' @5 arguments ')' '{' . $@6 statements return '}'
+
+    $default  reduce using rule 37 ($@6)
+
+    $@6  go to state 35
+
+
+State 22
+
+   26 arguments: argument INT WORD .
+
+    $default  reduce using rule 26 (arguments)
+
+
+State 23
+
+   19 assignment: WORD . '=' expression
+
+    '='  shift, and go to state 36
+
+
+State 24
+
+   29 beginIf: IF . '(' comparison ')' '{'
+
+    '('  shift, and go to state 37
+
+
+State 25
+
+   35 while: WHILE . '(' @3 comparison ')' '{' @4 statements '}'
+
+    '('  shift, and go to state 38
+
+
+State 26
+
+   20 print: PRINT . '(' QUOTES ')'
+   21      | PRINT . '(' WORD ')'
+
+    '('  shift, and go to state 39
+
+
+State 27
+
+   18 assignment: INT . WORD '=' $@1 expression
+
+    WORD  shift, and go to state 40
+
+
+State 28
+
+   41 main: MAIN '(' ')' '{' $@7 statements '}' .
+
+    $default  reduce using rule 41 (main)
+
+
+State 29
+
+   47 statement: assignment . ';'
+
+    ';'  shift, and go to state 41
+
+
+State 30
+
+   46 statement: print . ';'
+
+    ';'  shift, and go to state 42
+
+
+State 31
+
+   30 if: beginIf . statements '}'
+   32   | beginIf . statements '}' ELSE '{' @2 statements '}'
+
+    $default  reduce using rule 43 (statements)
+
+    statements  go to state 43
+
+
+State 32
+
+   44 statement: if .
+
+    $default  reduce using rule 44 (statement)
+
+
+State 33
+
+   45 statement: while .
+
+    $default  reduce using rule 45 (statement)
+
+
+State 34
+
+   42 statements: statements statement .
+
+    $default  reduce using rule 42 (statements)
+
+
+State 35
+
+   38 function: FUNCTION WORD '(' @5 arguments ')' '{' $@6 . statements return '}'
+
+    $default  reduce using rule 43 (statements)
+
+    statements  go to state 44
+
+
+State 36
+
+   19 assignment: WORD '=' . expression
+
+    NUMBER  shift, and go to state 45
+    WORD    shift, and go to state 46
+    '('     shift, and go to state 47
+
+    expression  go to state 48
+    term        go to state 49
+    value       go to state 50
+    functCall   go to state 51
+
+
+State 37
+
+   29 beginIf: IF '(' . comparison ')' '{'
+
+    NUMBER  shift, and go to state 45
+    WORD    shift, and go to state 46
+    '('     shift, and go to state 47
+
+    expression  go to state 52
+    term        go to state 49
+    value       go to state 50
+    comparison  go to state 53
+    functCall   go to state 51
+
+
+State 38
+
+   35 while: WHILE '(' . @3 comparison ')' '{' @4 statements '}'
+
+    $default  reduce using rule 33 (@3)
+
+    @3  go to state 54
+
+
+State 39
+
+   20 print: PRINT '(' . QUOTES ')'
+   21      | PRINT '(' . WORD ')'
+
+    WORD    shift, and go to state 55
+    QUOTES  shift, and go to state 56
+
+
+State 40
+
+   18 assignment: INT WORD . '=' $@1 expression
+
+    '='  shift, and go to state 57
+
+
+State 41
+
+   47 statement: assignment ';' .
+
+    $default  reduce using rule 47 (statement)
+
+
+State 42
+
+   46 statement: print ';' .
+
+    $default  reduce using rule 46 (statement)
+
+
+State 43
+
+   30 if: beginIf statements . '}'
+   32   | beginIf statements . '}' ELSE '{' @2 statements '}'
+   42 statements: statements . statement
+
+    WORD   shift, and go to state 23
+    IF     shift, and go to state 24
+    WHILE  shift, and go to state 25
+    PRINT  shift, and go to state 26
+    INT    shift, and go to state 27
+    '}'    shift, and go to state 58
+
+    assignment  go to state 29
+    print       go to state 30
+    beginIf     go to state 31
+    if          go to state 32
+    while       go to state 33
+    statement   go to state 34
+
+
+State 44
+
+   38 function: FUNCTION WORD '(' @5 arguments ')' '{' $@6 statements . return '}'
+   42 statements: statements . statement
+
+    WORD    shift, and go to state 23
+    IF      shift, and go to state 24
+    WHILE   shift, and go to state 25
+    PRINT   shift, and go to state 26
+    INT     shift, and go to state 27
+    RETURN  shift, and go to state 59
+
+    assignment  go to state 29
+    print       go to state 30
+    return      go to state 60
+    beginIf     go to state 31
+    if          go to state 32
+    while       go to state 33
+    statement   go to state 34
+
+
+State 45
+
+    8 value: NUMBER .
+
+    $default  reduce using rule 8 (value)
+
+
+State 46
+
+    9 value: WORD .
+   39 functCall: WORD . '(' parameters ')'
+
+    '('  shift, and go to state 61
+
+    $default  reduce using rule 9 (value)
+
+
+State 47
+
+    7 value: '(' . expression ')'
+
+    NUMBER  shift, and go to state 45
+    WORD    shift, and go to state 46
+    '('     shift, and go to state 47
+
+    expression  go to state 62
+    term        go to state 49
+    value       go to state 50
+    functCall   go to state 51
+
+
+State 48
+
+    1 expression: expression . '+' expression
+    2           | expression . '-' expression
+   19 assignment: WORD '=' expression .
+
+    '+'  shift, and go to state 63
+    '-'  shift, and go to state 64
+
+    $default  reduce using rule 19 (assignment)
+
+
+State 49
+
+    3 expression: term .
+    4 term: term . '*' value
+    5     | term . '/' value
+
+    '*'  shift, and go to state 65
+    '/'  shift, and go to state 66
+
+    $default  reduce using rule 3 (expression)
+
+
+State 50
+
+    6 term: value .
+
+    $default  reduce using rule 6 (term)
+
+
+State 51
+
+   10 value: functCall .
+
+    $default  reduce using rule 10 (value)
+
+
+State 52
+
+    1 expression: expression . '+' expression
+    2           | expression . '-' expression
+   11 comparison: expression . EQ expression
+   12           | expression . NEQ expression
+   13           | expression . LT expression
+   14           | expression . GT expression
+   15           | expression . LEQ expression
+   16           | expression . GEQ expression
+
+    EQ   shift, and go to state 67
+    NEQ  shift, and go to state 68
+    LT   shift, and go to state 69
+    GT   shift, and go to state 70
+    LEQ  shift, and go to state 71
+    GEQ  shift, and go to state 72
+    '+'  shift, and go to state 63
+    '-'  shift, and go to state 64
+
+
+State 53
+
+   29 beginIf: IF '(' comparison . ')' '{'
+
+    ')'  shift, and go to state 73
+
+
+State 54
+
+   35 while: WHILE '(' @3 . comparison ')' '{' @4 statements '}'
+
+    NUMBER  shift, and go to state 45
+    WORD    shift, and go to state 46
+    '('     shift, and go to state 47
+
+    expression  go to state 52
+    term        go to state 49
+    value       go to state 50
+    comparison  go to state 74
+    functCall   go to state 51
+
+
+State 55
+
+   21 print: PRINT '(' WORD . ')'
+
+    ')'  shift, and go to state 75
+
+
+State 56
+
+   20 print: PRINT '(' QUOTES . ')'
+
+    ')'  shift, and go to state 76
+
+
+State 57
+
+   18 assignment: INT WORD '=' . $@1 expression
+
+    $default  reduce using rule 17 ($@1)
+
+    $@1  go to state 77
+
+
+State 58
+
+   30 if: beginIf statements '}' .
+   32   | beginIf statements '}' . ELSE '{' @2 statements '}'
+
+    ELSE  shift, and go to state 78
+
+    $default  reduce using rule 30 (if)
+
+
+State 59
+
+   22 return: RETURN . expression ';'
+
+    NUMBER  shift, and go to state 45
+    WORD    shift, and go to state 46
+    '('     shift, and go to state 47
+
+    expression  go to state 79
+    term        go to state 49
+    value       go to state 50
+    functCall   go to state 51
+
+
+State 60
+
+   38 function: FUNCTION WORD '(' @5 arguments ')' '{' $@6 statements return . '}'
+
+    '}'  shift, and go to state 80
+
+
+State 61
+
+   39 functCall: WORD '(' . parameters ')'
+
+    WORD  shift, and go to state 81
+
+    parameters  go to state 82
+
+
+State 62
+
+    1 expression: expression . '+' expression
+    2           | expression . '-' expression
+    7 value: '(' expression . ')'
+
+    '+'  shift, and go to state 63
+    '-'  shift, and go to state 64
+    ')'  shift, and go to state 83
+
+
+State 63
+
+    1 expression: expression '+' . expression
+
+    NUMBER  shift, and go to state 45
+    WORD    shift, and go to state 46
+    '('     shift, and go to state 47
+
+    expression  go to state 84
+    term        go to state 49
+    value       go to state 50
+    functCall   go to state 51
+
+
+State 64
+
+    2 expression: expression '-' . expression
+
+    NUMBER  shift, and go to state 45
+    WORD    shift, and go to state 46
+    '('     shift, and go to state 47
+
+    expression  go to state 85
+    term        go to state 49
+    value       go to state 50
+    functCall   go to state 51
+
+
+State 65
+
+    4 term: term '*' . value
+
+    NUMBER  shift, and go to state 45
+    WORD    shift, and go to state 46
+    '('     shift, and go to state 47
+
+    value      go to state 86
+    functCall  go to state 51
+
+
+State 66
+
+    5 term: term '/' . value
+
+    NUMBER  shift, and go to state 45
+    WORD    shift, and go to state 46
+    '('     shift, and go to state 47
+
+    value      go to state 87
+    functCall  go to state 51
+
+
+State 67
+
+   11 comparison: expression EQ . expression
+
+    NUMBER  shift, and go to state 45
+    WORD    shift, and go to state 46
+    '('     shift, and go to state 47
+
+    expression  go to state 88
+    term        go to state 49
+    value       go to state 50
+    functCall   go to state 51
+
+
+State 68
+
+   12 comparison: expression NEQ . expression
+
+    NUMBER  shift, and go to state 45
+    WORD    shift, and go to state 46
+    '('     shift, and go to state 47
+
+    expression  go to state 89
+    term        go to state 49
+    value       go to state 50
+    functCall   go to state 51
+
+
+State 69
+
+   13 comparison: expression LT . expression
+
+    NUMBER  shift, and go to state 45
+    WORD    shift, and go to state 46
+    '('     shift, and go to state 47
+
+    expression  go to state 90
+    term        go to state 49
+    value       go to state 50
+    functCall   go to state 51
+
+
+State 70
+
+   14 comparison: expression GT . expression
+
+    NUMBER  shift, and go to state 45
+    WORD    shift, and go to state 46
+    '('     shift, and go to state 47
+
+    expression  go to state 91
+    term        go to state 49
+    value       go to state 50
+    functCall   go to state 51
+
+
+State 71
+
+   15 comparison: expression LEQ . expression
+
+    NUMBER  shift, and go to state 45
+    WORD    shift, and go to state 46
+    '('     shift, and go to state 47
+
+    expression  go to state 92
+    term        go to state 49
+    value       go to state 50
+    functCall   go to state 51
+
+
+State 72
+
+   16 comparison: expression GEQ . expression
+
+    NUMBER  shift, and go to state 45
+    WORD    shift, and go to state 46
+    '('     shift, and go to state 47
+
+    expression  go to state 93
+    term        go to state 49
+    value       go to state 50
+    functCall   go to state 51
+
+
+State 73
+
+   29 beginIf: IF '(' comparison ')' . '{'
+
+    '{'  shift, and go to state 94
+
+
+State 74
+
+   35 while: WHILE '(' @3 comparison . ')' '{' @4 statements '}'
+
+    ')'  shift, and go to state 95
+
+
+State 75
+
+   21 print: PRINT '(' WORD ')' .
+
+    $default  reduce using rule 21 (print)
+
+
+State 76
+
+   20 print: PRINT '(' QUOTES ')' .
+
+    $default  reduce using rule 20 (print)
+
+
+State 77
+
+   18 assignment: INT WORD '=' $@1 . expression
+
+    NUMBER  shift, and go to state 45
+    WORD    shift, and go to state 46
+    '('     shift, and go to state 47
+
+    expression  go to state 96
+    term        go to state 49
+    value       go to state 50
+    functCall   go to state 51
+
+
+State 78
+
+   32 if: beginIf statements '}' ELSE . '{' @2 statements '}'
+
+    '{'  shift, and go to state 97
+
+
+State 79
+
+    1 expression: expression . '+' expression
+    2           | expression . '-' expression
+   22 return: RETURN expression . ';'
+
+    '+'  shift, and go to state 63
+    '-'  shift, and go to state 64
+    ';'  shift, and go to state 98
+
+
+State 80
+
+   38 function: FUNCTION WORD '(' @5 arguments ')' '{' $@6 statements return '}' .
+
+    $default  reduce using rule 38 (function)
+
+
+State 81
+
+   23 parameters: WORD . parameter
+
+    ','  shift, and go to state 99
+
+    $default  reduce using rule 25 (parameter)
+
+    parameter  go to state 100
+
+
+State 82
+
+   39 functCall: WORD '(' parameters . ')'
+
+    ')'  shift, and go to state 101
+
+
+State 83
+
+    7 value: '(' expression ')' .
+
+    $default  reduce using rule 7 (value)
+
+
+State 84
+
+    1 expression: expression . '+' expression
+    1           | expression '+' expression .
+    2           | expression . '-' expression
+
+    $default  reduce using rule 1 (expression)
+
+
+State 85
+
+    1 expression: expression . '+' expression
+    2           | expression . '-' expression
+    2           | expression '-' expression .
+
+    $default  reduce using rule 2 (expression)
+
+
+State 86
+
+    4 term: term '*' value .
+
+    $default  reduce using rule 4 (term)
+
+
+State 87
+
+    5 term: term '/' value .
+
+    $default  reduce using rule 5 (term)
+
+
+State 88
+
+    1 expression: expression . '+' expression
+    2           | expression . '-' expression
+   11 comparison: expression EQ expression .
+
+    '+'  shift, and go to state 63
+    '-'  shift, and go to state 64
+
+    $default  reduce using rule 11 (comparison)
+
+
+State 89
+
+    1 expression: expression . '+' expression
+    2           | expression . '-' expression
+   12 comparison: expression NEQ expression .
+
+    '+'  shift, and go to state 63
+    '-'  shift, and go to state 64
+
+    $default  reduce using rule 12 (comparison)
+
+
+State 90
+
+    1 expression: expression . '+' expression
+    2           | expression . '-' expression
+   13 comparison: expression LT expression .
+
+    '+'  shift, and go to state 63
+    '-'  shift, and go to state 64
+
+    $default  reduce using rule 13 (comparison)
+
+
+State 91
+
+    1 expression: expression . '+' expression
+    2           | expression . '-' expression
+   14 comparison: expression GT expression .
+
+    '+'  shift, and go to state 63
+    '-'  shift, and go to state 64
+
+    $default  reduce using rule 14 (comparison)
+
+
+State 92
+
+    1 expression: expression . '+' expression
+    2           | expression . '-' expression
+   15 comparison: expression LEQ expression .
+
+    '+'  shift, and go to state 63
+    '-'  shift, and go to state 64
+
+    $default  reduce using rule 15 (comparison)
+
+
+State 93
+
+    1 expression: expression . '+' expression
+    2           | expression . '-' expression
+   16 comparison: expression GEQ expression .
+
+    '+'  shift, and go to state 63
+    '-'  shift, and go to state 64
+
+    $default  reduce using rule 16 (comparison)
+
+
+State 94
+
+   29 beginIf: IF '(' comparison ')' '{' .
+
+    $default  reduce using rule 29 (beginIf)
+
+
+State 95
+
+   35 while: WHILE '(' @3 comparison ')' . '{' @4 statements '}'
+
+    '{'  shift, and go to state 102
+
+
+State 96
+
+    1 expression: expression . '+' expression
+    2           | expression . '-' expression
+   18 assignment: INT WORD '=' $@1 expression .
+
+    '+'  shift, and go to state 63
+    '-'  shift, and go to state 64
+
+    $default  reduce using rule 18 (assignment)
+
+
+State 97
+
+   32 if: beginIf statements '}' ELSE '{' . @2 statements '}'
+
+    $default  reduce using rule 31 (@2)
+
+    @2  go to state 103
+
+
+State 98
+
+   22 return: RETURN expression ';' .
+
+    $default  reduce using rule 22 (return)
+
+
+State 99
+
+   24 parameter: ',' . parameters
+
+    WORD  shift, and go to state 81
+
+    parameters  go to state 104
+
+
+State 100
+
+   23 parameters: WORD parameter .
+
+    $default  reduce using rule 23 (parameters)
+
+
+State 101
+
+   39 functCall: WORD '(' parameters ')' .
+
+    $default  reduce using rule 39 (functCall)
+
+
+State 102
+
+   35 while: WHILE '(' @3 comparison ')' '{' . @4 statements '}'
+
+    $default  reduce using rule 34 (@4)
+
+    @4  go to state 105
+
+
+State 103
+
+   32 if: beginIf statements '}' ELSE '{' @2 . statements '}'
+
+    $default  reduce using rule 43 (statements)
+
+    statements  go to state 106
+
+
+State 104
+
+   24 parameter: ',' parameters .
+
+    $default  reduce using rule 24 (parameter)
+
+
+State 105
+
+   35 while: WHILE '(' @3 comparison ')' '{' @4 . statements '}'
+
+    $default  reduce using rule 43 (statements)
+
+    statements  go to state 107
+
+
+State 106
+
+   32 if: beginIf statements '}' ELSE '{' @2 statements . '}'
+   42 statements: statements . statement
+
+    WORD   shift, and go to state 23
+    IF     shift, and go to state 24
+    WHILE  shift, and go to state 25
+    PRINT  shift, and go to state 26
+    INT    shift, and go to state 27
+    '}'    shift, and go to state 108
+
+    assignment  go to state 29
+    print       go to state 30
+    beginIf     go to state 31
+    if          go to state 32
+    while       go to state 33
+    statement   go to state 34
+
+
+State 107
+
+   35 while: WHILE '(' @3 comparison ')' '{' @4 statements . '}'
+   42 statements: statements . statement
+
+    WORD   shift, and go to state 23
+    IF     shift, and go to state 24
+    WHILE  shift, and go to state 25
+    PRINT  shift, and go to state 26
+    INT    shift, and go to state 27
+    '}'    shift, and go to state 109
+
+    assignment  go to state 29
+    print       go to state 30
+    beginIf     go to state 31
+    if          go to state 32
+    while       go to state 33
+    statement   go to state 34
+
+
+State 108
+
+   32 if: beginIf statements '}' ELSE '{' @2 statements '}' .
+
+    $default  reduce using rule 32 (if)
+
+
+State 109
+
+   35 while: WHILE '(' @3 comparison ')' '{' @4 statements '}' .
+
+    $default  reduce using rule 35 (while)

@@ -1,0 +1,25 @@
+Comandos analizador lexico:
+
+- flex "nombreFichero".l
+- gcc lex.yy.c -lfl
+- ./a.out "ficheroAProbar"
+
+----------------------------------
+
+Comandos analizador sintactico
+
+- bison -d "nombreFichero".y
+- flex "nombreFichero".l
+- gcc "nombreFichero".tab.c lex.yy.c -lfl
+- ./a.out "ficheroAProbar"
+
+- bison -v "nombreFichero".y --> misint.output
+
+----------------------------------
+
+Comandos tabla de simbolos
+
+- bison -d "nombreFichero".y
+- flex "nombreFichero".l
+- gcc "nombreFichero".tab.c symbTable.c lex.yy.c -lfl
+- ./a.out "ficheroAProbar"

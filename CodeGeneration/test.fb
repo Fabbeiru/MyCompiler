@@ -1,0 +1,21 @@
+function sum(int a, int b) {
+    print(a);
+    print(b);
+    int aux = a + b;
+    print(aux);
+    return aux;
+}
+main() {
+    print("Inicio");
+    int x = 2;
+    int y = 3;
+    int res = sum(x, y);
+    if (res == 5) {
+        print("Resultado correcto");
+        print(res);
+    } else {
+        print("Resultado incorrecto");
+        print(res);
+    }
+    print("Fin");
+}

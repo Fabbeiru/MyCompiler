@@ -1,0 +1,10 @@
+main() {
+    print("bla");
+    int res = 1;
+    res = 3;
+    int a = 0;
+    int b = a;
+    a = 3;
+    print("caca");
+    res = a;
+}
